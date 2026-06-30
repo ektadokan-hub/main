@@ -231,7 +231,7 @@ src="https://www.facebook.com/tr?id=1033353149641302&ev=PageView&noscript=1"
         </div>
 
         <script>
-    const form = document.getElementById('customerForm');
+    const form = document.getElementById('checkout-form');
     const messageDiv = document.getElementById('message');
 
     form.addEventListener('submit', e => {
@@ -251,9 +251,9 @@ src="https://www.facebook.com/tr?id=1033353149641302&ev=PageView&noscript=1"
             },
             body: JSON.stringify({
                 data: {
-                    name: form.name.value,
+                    customer-name: form.name.value,
                     email: form.email.value,
-                    phone: form.phone.value,
+                    customer-phone: form.phone.value,
                     address: form.address.value,
                     quantity: form.quantity.value
                 }
