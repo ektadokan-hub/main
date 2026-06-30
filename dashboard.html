@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magcubic HY 300 - Merchant Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="logo-accent">Mag</span>cubic <span class="badge badge-admin">Admin</span>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active">📊 Overview</a>
+      <a href="index.html" class="nav-item">🌐 View Landing Page</a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <p>Magcubic HY 300 Admin</p>
+      <span>v1.0.0</span>
+    </div>
+  </aside>
+
+  <!-- Main Content Canvas -->
+  <main class="main-content">
+    
+    <!-- Top Header -->
+    <header class="dashboard-header">
+      <div class="header-title">
+        <h1>Overview</h1>
+        <p>Manage your orders, customers, and delivery status.</p>
+      </div>
+      <div class="header-actions">
+        <button id="btn-export-csv" class="btn btn-outline">📥 Export to CSV</button>
+        <button id="btn-add-mock" class="btn btn-primary btn-sm">➕ Add Mock Orders</button>
+      </div>
+    </header>
+
+    <!-- Stats Section -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon info">📦</div>
+        <div class="stat-data">
+          <h3>Total Orders</h3>
+          <p id="stat-total-orders">0</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon warning">⏳</div>
+        <div class="stat-data">
+          <h3>Pending Orders</h3>
+          <p id="stat-pending-orders">0</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon success">৳</div>
+        <div class="stat-data">
+          <h3>Total Revenue</h3>
+          <p id="stat-total-revenue">৳0</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon danger">🚚</div>
+        <div class="stat-data">
+          <h3>Shipping Fees</h3>
+          <p id="stat-shipping-fees">৳0</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter & Search Panel -->
+    <section class="filter-panel">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search by Order ID, Name, or Phone...">
+      </div>
+      <div class="filter-options">
+        <select id="filter-status">
+          <option value="All">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Processing">Processing</option>
+          <option value="Shipped">Shipped</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+
+        <select id="filter-district">
+          <option value="All">All Districts</option>
+          <option value="Dhaka">Dhaka</option>
+          <option value="Chittagong">Chittagong</option>
+          <option value="Sylhet">Sylhet</option>
+          <option value="Rajshahi">Rajshahi</option>
+          <option value="Khulna">Khulna</option>
+          <option value="Barisal">Barisal</option>
+          <option value="Rangpur">Rangpur</option>
+          <option value="Mymensingh">Mymensingh</option>
+          <option value="Outside">Outside Dhaka</option>
+        </select>
+
+        <button id="btn-clear-filters" class="btn btn-outline btn-sm">Clear</button>
+      </div>
+    </section>
+
+    <!-- Orders Table Section -->
+    <section class="table-container">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Customer Name</th>
+            <th>Phone</th>
+            <th>District</th>
+            <th>Total Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="orders-table-body">
+          <!-- Dynamically populated -->
+          <tr>
+            <td colspan="8" class="text-center py-5">No orders found. Enter a mock order or submit from the landing page.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Details & Actions Modal (Hidden by default) -->
+  <div id="details-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Order Details <span id="modal-title-id">#HY-1234</span></h2>
+        <button id="close-modal-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-section">
+          <h3>Customer Details</h3>
+          <table class="details-table">
+            <tr>
+              <td>Name:</td>
+              <td id="modal-cust-name">Fayez Ahmed</td>
+            </tr>
+            <tr>
+              <td>Phone:</td>
+              <td id="modal-cust-phone">+8801712345678</td>
+            </tr>
+            <tr>
+              <td>District:</td>
+              <td id="modal-cust-district">Dhaka</td>
+            </tr>
+            <tr>
+              <td>Address:</td>
+              <td id="modal-cust-address">House 12, Road 4, Sector 7, Uttara, Dhaka</td>
+            </tr>
+            <tr>
+              <td>Notes:</td>
+              <td id="modal-order-notes" class="text-italic">Deliver in the evening please.</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="modal-section">
+          <h3>Order Details</h3>
+          <table class="details-table">
+            <tr>
+              <td>Product:</td>
+              <td>Magcubic HY 300 Smart Projector</td>
+            </tr>
+            <tr>
+              <td>Price:</td>
+              <td id="modal-product-price">৳4,499</td>
+            </tr>
+            <tr>
+              <td>Shipping:</td>
+              <td id="modal-shipping-cost">৳60</td>
+            </tr>
+            <tr class="highlight-row">
+              <td>Total COD:</td>
+              <td id="modal-total-amount">৳4,559</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="modal-section">
+          <h3>Delivery Helpers (Manual Courier copy)</h3>
+          <p class="section-help">Click to copy details in formats easy to paste into Courier Portals (e.g. Steadfast Courier).</p>
+          <div class="helper-buttons">
+            <button id="btn-copy-address" class="btn btn-outline btn-sm">📋 Copy Full Address</button>
+            <button id="btn-copy-steadfast" class="btn btn-outline btn-sm">🚚 Copy for Steadfast COD</button>
+          </div>
+          <textarea id="copy-helper-area" class="hidden-textarea"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="status-edit-wrapper">
+          <label for="modal-status-select">Change Status:</label>
+          <select id="modal-status-select">
+            <option value="Pending">Pending</option>
+            <option value="Processing">Processing</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        <button id="btn-delete-order" class="btn btn-outline text-danger">🗑️ Delete Order</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
