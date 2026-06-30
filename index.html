@@ -228,7 +228,53 @@ src="https://www.facebook.com/tr?id=1033353149641302&ev=PageView&noscript=1"
             </button>
           </form>
         </div>
+<script>
+    const form = document.getElementById('customerForm');
+    const messageDiv = document.getElementById('message');
 
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        messageDiv.style.color = '#333';
+        messageDiv.textContent = 'Submitting...';
+
+        // REPLACE THIS URL WITH YOUR ACTUAL SHEETDB API URL
+        const sheetDbUrl = 'YOUR_SHEETDB_API_URL'; 
+
+        fetch(sheetDbUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                data: {
+                    name: form.name.value,
+                    email: form.email.value,
+                    phone: form.phone.value,
+                    address: form.address.value,
+                    quantity: form.quantity.value
+                }
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.created === 1) {
+                messageDiv.style.color = 'green';
+                messageDiv.textContent = 'Success! Your information has been saved.';
+                form.reset();
+            } else {
+                messageDiv.style.color = 'red';
+                messageDiv.textContent = 'Something went wrong. Please try again.';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            messageDiv.style.color = 'red';
+            messageDiv.textContent = 'An error occurred. Check your connection.';
+        });
+    });
+</script>
         <!-- Success Modal / Card (Hidden by default) -->
         <div id="success-message" class="success-card hidden">
           <div class="success-icon">✓</div>
