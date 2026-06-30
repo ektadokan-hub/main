@@ -231,51 +231,107 @@ src="https://www.facebook.com/tr?id=1033353149641302&ev=PageView&noscript=1"
         </div>
 
         <script>
-    const form = document.getElementById('checkout-form');
-    const messageDiv = document.getElementById('message');
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('checkout-form');
+  const citySelect = document.getElementById('shipping-city');
+  const shippingDisplay = document.getElementById('shipping-cost-display');
+  const totalDisplay = document.getElementById('total-amount-display');
+  const submitBtn = document.getElementById('submit-btn');
+  const btnText = submitBtn.querySelector('.btn-text');
+  const spinner = submitBtn.querySelector('.spinner');
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        
-        messageDiv.style.color = '#333';
-        messageDiv.textContent = 'Submitting...';
+  const basePrice = 4499;
 
-        // REPLACE THIS URL WITH YOUR ACTUAL SHEETDB API URL
-        const sheetDbUrl = 'https://sheetdb.io/api/v1/tmtjky629gif2'; 
+  // 1. Map cities to their respective delivery charges
+  const shippingRates = {
+    'Dhaka': 60,
+    'Chittagong': 120,
+    'Sylhet': 120,
+    'Rajshahi': 120,
+    'Khulna': 120,
+    'Barisal': 120,
+    'Rangpur': 120,
+    'Mymensingh': 120
+  };
 
-        fetch(sheetDbUrl, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                data: {
-                    customer-name: form.name.value,
-                    email: form.email.value,
-                    customer-phone: form.phone.value,
-                    address: form.address.value,
-                    quantity: form.quantity.value
-                }
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.created === 1) {
-                messageDiv.style.color = 'green';
-                messageDiv.textContent = 'Success! Your information has been saved.';
-                form.reset();
-            } else {
-                messageDiv.style.color = 'red';
-                messageDiv.textContent = 'Something went wrong. Please try again.';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            messageDiv.style.color = 'red';
-            messageDiv.textContent = 'An error occurred. Check your connection.';
-        });
+  // 2. Dynamic Price Calculator
+  function updatePricing() {
+    const selectedCity = citySelect.value;
+    const shippingCost = shippingRates[selectedCity] || 0;
+    const totalAmount = basePrice + shippingCost;
+
+    // Update the UI texts
+    shippingDisplay.textContent = `৳${shippingCost}`;
+    totalDisplay.textContent = `৳${totalAmount.toLocaleString()}`;
+    btnText.textContent = `Confirm Order (৳${totalAmount.toLocaleString()})`;
+  }
+
+  // Listen for city changes to recalculate costs
+  citySelect.addEventListener('change', updatePricing);
+
+  // 3. Form Submission to SheetDB
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Show loading spinner & disable button to prevent double submissions
+    submitBtn.disabled = true;
+    btnText.textContent = 'Processing Order...';
+    if (spinner) spinner.classList.remove('hidden');
+
+    const selectedCity = citySelect.value;
+    const shippingCost = shippingRates[selectedCity] || 0;
+    const finalTotal = basePrice + shippingCost;
+    
+    // Format full phone number with country prefix
+    const rawPhone = document.getElementById('customer-phone').value;
+    const fullPhone = `+880${rawPhone}`;
+
+    // Get current date and time
+    const orderDate = new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' });
+
+    // REPLACE THIS URL WITH YOUR ACTUAL SHEETDB API URL
+    const sheetDbUrl = 'https://sheetdb.io/api/v1/tmtjky629gif2'; 
+
+    const orderData = {
+      date: orderDate,
+      name: document.getElementById('customer-name').value,
+      phone: fullPhone,
+      city: selectedCity,
+      address: document.getElementById('customer-address').value,
+      notes: document.getElementById('order-notes').value || 'N/A',
+      total_price: `৳${finalTotal}`
+    };
+
+    fetch(sheetDbUrl, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ data: orderData })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.created === 1) {
+        alert('🎉 Order Confirmed Successfully! We will call you soon.');
+        form.reset();
+        updatePricing(); // Reset pricing displays to default
+      } else {
+        alert('❌ Order failed. Please try again or contact support.');
+      }
+    })
+    .catch(error => {
+      console.error('Submission Error:', error);
+      alert('❌ Connection error. Please check your internet and try again.');
+    })
+    .finally(() => {
+      // Restore button status
+      submitBtn.disabled = false;
+      if (spinner) spinner.classList.add('hidden');
+      updatePricing();
     });
+  });
+});
 </script>
 
         <!-- Success Modal / Card (Hidden by default) -->
