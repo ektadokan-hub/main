@@ -292,12 +292,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const sheetDbUrl = 'https://sheetdb.io/api/v1/tmtjky629gif2'; 
 
     const orderData = {
+order_id: '', // Leaves empty or assign a generator if needed
       date: orderDate,
       name: document.getElementById('customer-name').value,
       phone: fullPhone,
-      city: selectedCity,
-      address: document.getElementById('customer-address').value,
-      notes: document.getElementById('order-notes').value || 'N/A',
+      district: selectedCity,
+      address: document.getElementById('customer-address').value, // <-- Added Address Mapping
+      total_amount: `৳${finalTotal}`,
+      note: document.getElementById('order-notes').value || 'N/A',
       total_price: `৳${finalTotal}`
     };
 
